@@ -1,0 +1,415 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/api/v1/login":
+    post:
+      summary: Authenticates user
+      tags:
+      - Authentication
+      parameters: []
+      responses:
+        '200':
+          description: successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                      full_name:
+                        type: string
+        '401':
+          description: invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: test@example.com
+                password:
+                  type: string
+                  example: password123
+              required:
+              - email
+              - password
+  "/api/v1/verify_email":
+    post:
+      summary: Verifies user email
+      tags:
+      - Email Verification
+      parameters: []
+      responses:
+        '200':
+          description: email verified successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '422':
+          description: invalid verification token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  example: valid_token
+              required:
+              - token
+  "/api/v1/organizations":
+    get:
+      summary: Lists all organizations
+      tags:
+      - Organizations
+      security:
+      - bearer_auth: []
+      responses:
+        '200':
+          description: organizations found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    industry:
+                      type: string
+                    owner_id:
+                      type: integer
+    post:
+      summary: Creates an organization
+      tags:
+      - Organizations
+      security:
+      - bearer_auth: []
+      parameters: []
+      responses:
+        '201':
+          description: organization created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: New Organization
+                industry:
+                  type: string
+                  example: Textiles
+              required:
+              - name
+              - industry
+  "/api/v1/organizations/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Retrieves an organization
+      tags:
+      - Organizations
+      security:
+      - bearer_auth: []
+      responses:
+        '200':
+          description: organization found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  industry:
+                    type: string
+                  owner_id:
+                    type: integer
+    put:
+      summary: Updates an organization
+      tags:
+      - Organizations
+      security:
+      - bearer_auth: []
+      parameters: []
+      responses:
+        '200':
+          description: organization updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Updated Organization
+                industry:
+                  type: string
+    delete:
+      summary: Deletes an organization
+      tags:
+      - Organizations
+      security:
+      - bearer_auth: []
+      responses:
+        '204':
+          description: organization deleted
+  "/api/v1/forgot_password":
+    post:
+      summary: Request password reset
+      tags:
+      - Passwords
+      parameters: []
+      responses:
+        '200':
+          description: password reset instructions sent
+        '404':
+          description: email not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+              required:
+              - email
+  "/api/v1/reset_password":
+    put:
+      summary: Reset password
+      tags:
+      - Passwords
+      parameters: []
+      responses:
+        '200':
+          description: password reset successfully
+        '422':
+          description: invalid or expired token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                password:
+                  type: string
+                  minimum: 6
+                password_confirmation:
+                  type: string
+                  minimum: 6
+              required:
+              - token
+              - password
+              - password_confirmation
+  "/api/v1/auth/{provider}/callback":
+    get:
+      summary: OAuth callback endpoint
+      tags:
+      - Social Authentication
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        description: "OAuth provider (e.g., google_oauth2):\n * `google_oauth2` \n
+          * `facebook` \n "
+        enum:
+        - google_oauth2
+        - facebook
+        schema:
+          type: string
+      responses:
+        '400':
+          description: bad request - missing auth data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 400
+                  error:
+                    type: string
+                    example: Bad Request
+                  exception:
+                    type: string
+                    example: 'param is missing or the value is empty or invalid: Auth
+                      data missing'
+        '409':
+          description: account exists with different provider
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '401':
+          description: invalid credentials error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '403':
+          description: access denied by user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '503':
+          description: OAuth service unavailable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '200':
+          description: successful authentication - new user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                      first_name:
+                        type: string
+                      last_name:
+                        type: string
+  "/api/v1/users":
+    post:
+      summary: Creates a user
+      tags:
+      - Users
+      parameters: []
+      responses:
+        '201':
+          description: user created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                      full_name:
+                        type: string
+        '422':
+          description: invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      example: new@example.com
+                    password:
+                      type: string
+                      example: password123
+                    password_confirmation:
+                      type: string
+                      example: password123
+                    first_name:
+                      type: string
+                      example: John
+                    last_name:
+                      type: string
+                      example: Doe
+                  required:
+                  - email
+                  - password
+                  - password_confirmation
+                  - first_name
+                  - last_name
+components:
+  securitySchemes:
+    bearer_auth:
+      type: http
+      scheme: bearer
+      bearer_format: JWT
+servers:
+- url: https://local.yourdomain.com:3000
+  description: Development server
+- url: https://{defaultHost}
+  description: Production server
+  variables:
+    defaultHost:
+      default: www.example.com

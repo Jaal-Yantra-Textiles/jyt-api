@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OAuth Test</title>
+  <style>
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 10px;
+      border-radius: 5px;
+      text-decoration: none;
+      color: white;
+    }
+    .google {
+      background-color: #DB4437;
+    }
+    .facebook {
+      background-color: #4267B2;
+    }
+  </style>
+</head>
+<body>
+  <h1>OAuth Test Page</h1>
+
+  <a href="/api/v1/auth/google_oauth2" class="button google">
+    Sign in with Google
+  </a>
+
+  <a href="/api/v1/auth/facebook" class="button facebook">
+    Sign in with Facebook
+  </a>
+
+  <div id="response" style="margin-top: 20px;"></div>
+
+  <script>
+    // Handle the OAuth response
+    window.onload = function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('token');
+      const error = urlParams.get('error');
+
+      if (token) {
+        document.getElementById('response').innerHTML = `
+          <h3>Success!</h3>
+          <p>Token: ${token}</p>
+        `;
+      } else if (error) {
+        document.getElementById('response').innerHTML = `
+          <h3>Error</h3>
+          <p>${error}</p>
+        `;
+      }
+    };
+  </script>
+</body>
+</html>
