@@ -7,6 +7,14 @@ Jaal Yantra Textiles is a full backend application tailored specifically for the
 
 Our platform provides a **no-code approach**, allowing even non-technical users to design and manage their textile operations. This empowers businesses to adapt to changes without needing to write complex code, enabling faster turnarounds and increased productivity.
 
+### Why We Built This
+There are many open-source applications available, but most of them either require a heavy learning curve or lack the manageability needed to fit the needs of textile businesses. Jaal Yantra Textiles was built to provide a domain-oriented solution that is easy to use, flexible, and efficient for managing textile operations.
+
+Key components include:
+
+1. **Social Auth API**: Simplify user onboarding with social authentication, making it easy for users to access the platform.
+2. **Organization-Based API**: Manage multiple organizations within the platform, providing structure for roles, permissions, and collaborative workspaces.
+
 ## Key Features
 
 ### 1. Production & Workflow Management
@@ -63,6 +71,14 @@ Our platform provides a **no-code approach**, allowing even non-technical users 
    ```
 
 Access the application in your browser at `http://localhost:3000`.
+
+## To-Do List
+1. **RSpec-Based Testing**: Ensure all tests are covered using RSpec for robust code quality and reliability.
+2. **Inventory Data Type Implementation**: Implement an appropriate data type for managing inventory more effectively.
+3. **Dynamic API**: Create a dynamic API that allows users to create custom APIs on the fly without writing code.
+4. **WebSocket Support**: Add support for real-time features using WebSocket.
+5. **Commerce Integration**: Integrate e-commerce capabilities to allow for direct sales and transactions.
+6. **Express Flow**: Develop easy-to-use functions that run on top of each API for faster and more intuitive operations.
 
 ## Contribution
 We welcome contributions from the community to help improve the platform! To get started, fork this repository, create a new branch, and submit a pull request with your changes.
