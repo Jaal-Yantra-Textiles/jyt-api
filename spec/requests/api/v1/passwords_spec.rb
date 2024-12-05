@@ -1,4 +1,5 @@
 require 'swagger_helper'
+include ActiveJob::TestHelper
 
 RSpec.describe 'Api::V1::Passwords', type: :request do
   path '/api/v1/forgot_password' do
@@ -12,7 +13,7 @@ RSpec.describe 'Api::V1::Passwords', type: :request do
         properties: {
           email: { type: :string, example: 'user@example.com' }
         },
-        required: ['email']
+        required: [ 'email' ]
       }
 
       response '200', 'password reset instructions sent' do
@@ -20,6 +21,7 @@ RSpec.describe 'Api::V1::Passwords', type: :request do
         let(:params) { { email: user.email } }
 
         run_test! do |response|
+          perform_enqueued_jobs
           data = JSON.parse(response.body)
           expect(data['message']).to include('Password reset instructions sent')
 
@@ -55,7 +57,7 @@ RSpec.describe 'Api::V1::Passwords', type: :request do
           password: { type: :string, minimum: 6 },
           password_confirmation: { type: :string, minimum: 6 }
         },
-        required: ['token', 'password', 'password_confirmation']
+        required: [ 'token', 'password', 'password_confirmation' ]
       }
 
       response '200', 'password reset successfully' do

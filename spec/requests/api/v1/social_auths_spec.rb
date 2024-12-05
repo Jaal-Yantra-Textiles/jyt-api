@@ -8,7 +8,7 @@ RSpec.describe 'Api::V1::SocialAuths', type: :request do
 
       parameter name: :provider, in: :path, type: :string, required: true,
                 description: 'OAuth provider (e.g., google_oauth2)',
-                enum: ['google_oauth2', 'facebook']
+                enum: [ 'google_oauth2', 'facebook' ]
 
       let(:auth_data) do
         OmniAuth::AuthHash.new({

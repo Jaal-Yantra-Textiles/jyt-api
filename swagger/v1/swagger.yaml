@@ -4,6 +4,131 @@ info:
   title: API V1
   version: v1
 paths:
+  "/api/v1/organizations/{organization_id}/assets":
+    parameters:
+    - name: organization_id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Lists assets
+      tags:
+      - Assets
+      description: Returns a paginated list of organization assets
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: assets found
+        '404':
+          description: organization not found
+        '401':
+          description: unauthorized
+    post:
+      summary: Creates an asset
+      tags:
+      - Assets
+      description: Creates a new asset in the organization
+      security:
+      - bearer_auth: []
+      parameters: []
+      responses:
+        '201':
+          description: asset created
+        '422':
+          description: invalid request
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                asset:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    content_type:
+                      type: string
+                    byte_size:
+                      type: integer
+                    storage_provider:
+                      type: string
+                      enum:
+                      - s3
+                      - distributed
+                    storage_key:
+                      type: string
+                    storage_path:
+                      type: string
+                    metadata:
+                      type: object
+                  required:
+                  - name
+                  - content_type
+                  - byte_size
+                  - storage_provider
+                  - storage_key
+                  - storage_path
+  "/api/v1/organizations/{organization_id}/assets/{id}":
+    parameters:
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+    - name: organization_id
+      in: path
+      description: Organization ID
+      required: true
+      schema:
+        type: string
+    - name: id
+      in: path
+      description: Asset ID
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Retrieves an asset
+      tags:
+      - Assets
+      security:
+      - bearer_auth: []
+      responses:
+        '200':
+          description: asset found
+        '404':
+          description: asset not found
+        '401':
+          description: unauthorized
+    delete:
+      summary: Deletes an asset
+      tags:
+      - Assets
+      security:
+      - bearer_auth: []
+      responses:
+        '204':
+          description: asset deleted
+        '404':
+          description: asset not found
+        '401':
+          description: unauthorized
   "/api/v1/login":
     post:
       summary: Authenticates user
@@ -196,6 +321,78 @@ paths:
       responses:
         '204':
           description: organization deleted
+  "/api/v1/organizations/{id}/activate":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    post:
+      summary: Activates an organization
+      tags:
+      - Organizations
+      security:
+      - bearer_auth: []
+      responses:
+        '200':
+          description: organization activated
+  "/api/v1/organizations/{id}/invite_user":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    post:
+      summary: Invites a user to the organization
+      tags:
+      - Organizations
+      security:
+      - bearer_auth: []
+      parameters: []
+      responses:
+        '200':
+          description: invitation sent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+              required:
+              - email
+  "/api/v1/organizations/{id}/add_user":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    post:
+      summary: Adds a user to the organization
+      tags:
+      - Organizations
+      security:
+      - bearer_auth: []
+      parameters: []
+      responses:
+        '200':
+          description: user added
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+              required:
+              - email
   "/api/v1/forgot_password":
     post:
       summary: Request password reset
@@ -247,6 +444,51 @@ paths:
               - token
               - password
               - password_confirmation
+  "/api/v1/register":
+    post:
+      summary: Register first admin user
+      tags:
+      - User Registration
+      description: Creates the first admin user in the system. Only works when no
+        users exist.
+      parameters: []
+      responses:
+        '201':
+          description: first user created successfully
+        '422':
+          description: invalid request
+        '403':
+          description: first user already exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      example: admin@example.com
+                    password:
+                      type: string
+                      example: password123
+                    password_confirmation:
+                      type: string
+                      example: password123
+                    first_name:
+                      type: string
+                      example: Admin
+                    last_name:
+                      type: string
+                      example: Last
+                  required:
+                  - email
+                  - password
+                  - password_confirmation
+                  - first_name
+                  - last_name
   "/api/v1/auth/{provider}/callback":
     get:
       summary: OAuth callback endpoint
@@ -276,7 +518,7 @@ paths:
                     example: 400
                   error:
                     type: string
-                    example: Bad Request
+                    example: Auth data missing
                   exception:
                     type: string
                     example: 'param is missing or the value is empty or invalid: Auth
@@ -336,10 +578,48 @@ paths:
                       last_name:
                         type: string
   "/api/v1/users":
+    get:
+      summary: Lists all users
+      tags:
+      - Users
+      security:
+      - bearer_auth: []
+      responses:
+        '200':
+          description: users found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        email:
+                          type: string
+                        full_name:
+                          type: string
+                        role:
+                          type: string
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
     post:
       summary: Creates a user
       tags:
       - Users
+      security:
+      - bearer_auth: []
       parameters: []
       responses:
         '201':
@@ -349,14 +629,16 @@ paths:
               schema:
                 type: object
                 properties:
-                  token:
-                    type: string
                   user:
                     type: object
                     properties:
+                      id:
+                        type: integer
                       email:
                         type: string
                       full_name:
+                        type: string
+                      role:
                         type: string
         '422':
           description: invalid request
@@ -369,6 +651,15 @@ paths:
                     type: array
                     items:
                       type: string
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
       requestBody:
         content:
           application/json:
@@ -393,12 +684,187 @@ paths:
                     last_name:
                       type: string
                       example: Doe
+                    role:
+                      type: string
+                      enum:
+                      - customer
+                      - admin
+                      example: customer
                   required:
                   - email
                   - password
                   - password_confirmation
                   - first_name
                   - last_name
+  "/api/v1/users/profile":
+    get:
+      summary: Get current user
+      tags:
+      - Users
+      security:
+      - bearer_auth: []
+      responses:
+        '200':
+          description: current user retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      full_name:
+                        type: string
+                      role:
+                        type: string
+                  organizations:
+                    type: object
+                    properties:
+                      owned:
+                        type: array
+                        items:
+                          type: object
+                      member:
+                        type: array
+                        items:
+                          type: object
+  "/api/v1/users/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Get a user
+      tags:
+      - Users
+      security:
+      - bearer_auth: []
+      responses:
+        '200':
+          description: user found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      full_name:
+                        type: string
+                      role:
+                        type: string
+        '404':
+          description: user not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+    put:
+      summary: Update a user
+      tags:
+      - Users
+      security:
+      - bearer_auth: []
+      parameters: []
+      responses:
+        '200':
+          description: user updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      full_name:
+                        type: string
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                    first_name:
+                      type: string
+                    last_name:
+                      type: string
+                    password:
+                      type: string
+                    password_confirmation:
+                      type: string
+    delete:
+      summary: Delete a user
+      tags:
+      - Users
+      security:
+      - bearer_auth: []
+      responses:
+        '200':
+          description: user deleted
+        '401':
+          description: unauthorized
+  "/api/v1/users/social_connections":
+    get:
+      summary: Get user social connections
+      tags:
+      - Users
+      security:
+      - bearer_auth: []
+      responses:
+        '200':
+          description: social connections retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  connections:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        provider:
+                          type: string
+                        connected_at:
+                          type: string
+                          format: date-time
+                        expires_at:
+                          type: string
+                          format: date-time
 components:
   securitySchemes:
     bearer_auth:

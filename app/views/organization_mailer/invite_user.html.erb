@@ -1,0 +1,14 @@
+<h1>You've been invited to join <%= @organization.name %></h1>
+<p>
+  Hello,
+</p>
+<p>
+  You have been invited to join the organization: <strong><%= @organization.name %></strong>.
+  Please click the link below to accept the invitation.
+</p>
+<p>
+  <a href="<%= accept_invitation_url(@invitation) %>">Accept Invitation</a>
+</p>
+<p>
+  If you have any questions, feel free to contact us.
+</p>

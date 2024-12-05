@@ -9,7 +9,7 @@ RSpec.describe "Api::V1::Organizations API", type: :request do
     get 'Lists all organizations' do
       tags 'Organizations'
       produces 'application/json'
-      security [bearer_auth: []]
+      security [ bearer_auth: [] ]
 
       response '200', 'organizations found' do
         let(:Authorization) { auth_token }
@@ -36,7 +36,7 @@ RSpec.describe "Api::V1::Organizations API", type: :request do
       tags 'Organizations'
       consumes 'application/json'
       produces 'application/json'
-      security [bearer_auth: []]
+      security [ bearer_auth: [] ]
 
       parameter name: :organization, in: :body, schema: {
         type: :object,
@@ -44,7 +44,7 @@ RSpec.describe "Api::V1::Organizations API", type: :request do
           name: { type: :string, example: 'New Organization' },
           industry: { type: :string, example: 'Textiles' }
         },
-        required: ['name', 'industry']
+        required: [ 'name', 'industry' ]
       }
 
       response '201', 'organization created' do
@@ -65,7 +65,7 @@ RSpec.describe "Api::V1::Organizations API", type: :request do
     get 'Retrieves an organization' do
       tags 'Organizations'
       produces 'application/json'
-      security [bearer_auth: []]
+      security [ bearer_auth: [] ]
 
       response '200', 'organization found' do
         let(:Authorization) { auth_token }
@@ -90,7 +90,7 @@ RSpec.describe "Api::V1::Organizations API", type: :request do
       tags 'Organizations'
       consumes 'application/json'
       produces 'application/json'
-      security [bearer_auth: []]
+      security [ bearer_auth: [] ]
 
       parameter name: :organization, in: :body, schema: {
         type: :object,
@@ -114,7 +114,7 @@ RSpec.describe "Api::V1::Organizations API", type: :request do
 
     delete 'Deletes an organization' do
       tags 'Organizations'
-      security [bearer_auth: []]
+      security [ bearer_auth: [] ]
 
       response '204', 'organization deleted' do
         let(:Authorization) { auth_token }
@@ -126,5 +126,85 @@ RSpec.describe "Api::V1::Organizations API", type: :request do
         end
       end
     end
+
+    path '/api/v1/organizations/{id}/activate' do
+       parameter name: :id, in: :path, type: :integer
+
+       post 'Activates an organization' do
+         tags 'Organizations'
+         security [ bearer_auth: [] ]
+
+         response '200', 'organization activated' do
+           let(:Authorization) { auth_token }
+           let(:id) { organizations.first.id }
+
+           run_test! do
+             expect(response).to have_http_status(:ok)
+             expect(organizations.first.reload.active).to be true
+           end
+         end
+       end
+     end
+
+     path '/api/v1/organizations/{id}/invite_user' do
+       parameter name: :id, in: :path, type: :integer
+
+       post 'Invites a user to the organization' do
+         tags 'Organizations'
+         consumes 'application/json'
+         produces 'application/json'
+         security [ bearer_auth: [] ]
+
+         parameter name: :email, in: :body, schema: {
+           type: :object,
+           properties: {
+             email: { type: :string, example: 'user@example.com' }
+           },
+           required: [ 'email' ]
+         }
+
+         response '200', 'invitation sent' do
+           let(:Authorization) { auth_token }
+           let(:id) { organizations.first.id }
+           let(:email) { { email: 'user@example.com' } }
+
+           run_test! do
+             expect(response).to have_http_status(:ok)
+             expect(Invitation.count).to eq(1)
+           end
+         end
+       end
+     end
+
+     path '/api/v1/organizations/{id}/add_user' do
+       parameter name: :id, in: :path, type: :integer
+
+       post 'Adds a user to the organization' do
+         tags 'Organizations'
+         consumes 'application/json'
+         produces 'application/json'
+         security [ bearer_auth: [] ]
+
+         parameter name: :email, in: :body, schema: {
+           type: :object,
+           properties: {
+             email: { type: :string, example: 'user@example.com' }
+           },
+           required: [ 'email' ]
+         }
+
+         response '200', 'user added' do
+           let(:Authorization) { auth_token }
+           let(:id) { organizations.first.id }
+           let(:email) { { email: 'user@example.com' } }
+           let!(:user_to_add) { create(:user, email: 'user@example.com') }
+
+           run_test! do
+             expect(response).to have_http_status(:ok)
+             expect(organizations.first.members).to include(user_to_add)
+           end
+         end
+       end
+     end
   end
 end

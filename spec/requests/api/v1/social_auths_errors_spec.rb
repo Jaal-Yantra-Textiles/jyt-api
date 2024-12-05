@@ -8,7 +8,7 @@ RSpec.describe 'Api::V1::SocialAuths', type: :request do
 
       parameter name: :provider, in: :path, type: :string, required: true,
                 description: 'OAuth provider (e.g., google_oauth2)',
-                enum: ['google_oauth2', 'facebook']
+                enum: [ 'google_oauth2', 'facebook' ]
 
       before do
         OmniAuth.config.test_mode = true
@@ -19,7 +19,7 @@ RSpec.describe 'Api::V1::SocialAuths', type: :request do
         schema type: :object,
                properties: {
                  status: { type: :integer, example: 400 },
-                 error: { type: :string, example: "Bad Request" },
+                 error: { type: :string, example: "Auth data missing" },
                  exception: { type: :string, example: "param is missing or the value is empty or invalid: Auth data missing" }
                }
 
@@ -29,7 +29,7 @@ RSpec.describe 'Api::V1::SocialAuths', type: :request do
         run_test! do |response|
           data = JSON.parse(response.body)
           expect(data['status']).to eq(400)
-          expect(data['error']).to eq('Bad Request')
+          expect(data['error']).to eq('Auth data missing')
           expect(data['exception']).to include('Auth data missing')
         end
       end

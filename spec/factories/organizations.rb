@@ -1,7 +1,9 @@
+
 FactoryBot.define do
   factory :organization do
-    name { "MyString" }
-    industry { "MyString" }
+    name { Faker::Company.name }
+    industry { Faker::Company.industry }
+    active { true }
     association :owner, factory: :user
   end
 end

@@ -3,7 +3,15 @@ class User < ApplicationRecord
   has_secure_password validations: false
   has_secure_token :reset_password_token
   has_secure_token :email_verification_token
-  has_many :organizations, foreign_key: :owner_id, dependent: :destroy
+  has_many :owned_organizations,
+      class_name: "Organization",
+      foreign_key: :owner_id,
+      dependent: :destroy
+
+  has_and_belongs_to_many :member_organizations,
+      class_name: "Organization",
+      join_table: "organizations_users"
+
   # Enums
   enum :role,  customer: 0, admin: 1
 
@@ -62,6 +70,9 @@ class User < ApplicationRecord
     )
   end
 
+  def all_organizations
+     Organization.where(id: owned_organization_ids + member_organization_ids)
+  end
 
   private
 

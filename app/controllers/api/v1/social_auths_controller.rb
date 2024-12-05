@@ -7,23 +7,23 @@ module Api
       rescue_from ActionController::ParameterMissing, with: :handle_parameter_missing
 
       def callback
-        auth_data = request.env['omniauth.auth']
-        error = request.env['omniauth.error']
+        auth_data = request.env["omniauth.auth"]
+        error = request.env["omniauth.error"]
 
         # Handle OAuth errors first
         if error.present?
           case error.error
-          when 'invalid_credentials'
-            return render json: { error: 'Invalid credentials provided' }, status: :unauthorized
-          when 'access_denied'
-            return render json: { error: 'Access denied by user' }, status: :forbidden
+          when "invalid_credentials"
+            return render json: { error: "Invalid credentials provided" }, status: :unauthorized
+          when "access_denied"
+            return render json: { error: "Access denied by user" }, status: :forbidden
           else
             return handle_omniauth_error({ error: error.error, message: error.message })
           end
         end
 
         # Check for missing auth data
-        raise ActionController::ParameterMissing.new('Auth data missing') unless auth_data
+        raise ActionController::ParameterMissing.new("Auth data missing") unless auth_data
 
         # Process the authentication
         social_account = SocialAccount.find_or_initialize_by(
@@ -49,18 +49,18 @@ module Api
       end
 
       def failure
-        error_type = params[:error_type] || params[:message] || request.env['omniauth.error.type']
-        message = params[:message] || request.env['omniauth.error.message'] || 'Unknown error'
-        strategy = request.env['omniauth.strategy']&.name
+        error_type = params[:error_type] || params[:message] || request.env["omniauth.error.type"]
+        message = params[:message] || request.env["omniauth.error.message"] || "Unknown error"
+        strategy = request.env["omniauth.strategy"]&.name
         Rails.logger.error("Failure action triggered: Type=#{error_type}, Message=#{message}, Strategy=#{strategy}, Params=#{params.inspect}")
 
         case error_type
-        when 'access_denied'
+        when "access_denied"
           Rails.logger.error("Access denied error triggered: Type=#{error_type}, Message=#{message}, Strategy=#{strategy}, Params=#{params.inspect}")
-          render json: { error: 'Access denied by user' }, status: :forbidden
-        when 'invalid_credentials'
+          render json: { error: "Access denied by user" }, status: :forbidden
+        when "invalid_credentials"
           Rails.logger.error("Invalid credentials error triggered: Type=#{error_type}, Message=#{message}, Strategy=#{strategy}, Params=#{params.inspect}")
-          render json: { error: 'Invalid credentials provided' }, status: :unauthorized
+          render json: { error: "Invalid credentials provided" }, status: :unauthorized
         else
           handle_omniauth_error({ error: error_type, message: message })
         end
@@ -75,7 +75,7 @@ module Api
           Rails.logger.error("Raising account_exists error for email: #{auth_data.info.email}")
           error_data = { existing_provider: existing_user.oauth_provider }
           raise OmniAuth::Strategies::OAuth2::CallbackError.new(
-            'account_exists',
+            "account_exists",
             "Account exists with provider #{existing_user.oauth_provider}",
             error_data
           )
@@ -101,29 +101,33 @@ module Api
         Rails.logger.error("OAuth Error: #{error[:message]}")
         Rails.logger.error("OAuth Error Type: #{error[:error]}")
         status_code = case error[:error].to_s
-                     when 'account_exists' then :conflict
-                     when 'invalid_credentials' then :unauthorized
-                     when 'access_denied' then :forbidden
-                     else :unprocessable_entity
-                     end
+        when "account_exists" then :conflict
+        when "invalid_credentials" then :unauthorized
+        when "access_denied" then :forbidden
+        else :unprocessable_entity
+        end
 
         provider = error[:error_data]&.fetch(:existing_provider, nil)
         render json: {
-          error: error[:error] == 'account_exists' ? 'Account already exists with different provider' : error[:error],
+          error: error[:error] == "account_exists" ? "Account already exists with different provider" : error[:error],
           provider: provider
         }, status: status_code
       end
 
       def handle_validation_error(error)
         render json: {
-          error: 'Failed to create account',
+          error: "Failed to create account",
           details: error.record.errors.full_messages
         }, status: :unprocessable_entity
       end
 
       def handle_parameter_missing(error)
-        render json: { error: error.message }, status: :bad_request
-      end
+              render json: {
+                status: 400,
+                error: error.param,
+                exception: "param is missing or the value is empty or invalid: #{error.param}"
+              }, status: :bad_request
+            end
 
       def handle_callback_error(error)
         error_data = error.instance_variable_get(:@data) || {}
@@ -135,11 +139,11 @@ module Api
       end
 
       def handle_oauth_error(error)
-        render json: { error: 'OAuth service error', details: error.message }, status: :service_unavailable
+        render json: { error: "OAuth service error", details: error.message }, status: :service_unavailable
       end
 
       def passthru
-        render status: :not_found, json: { error: 'Not found. Initiating OAuth flow.' }
+        render status: :not_found, json: { error: "Not found. Initiating OAuth flow." }
       end
     end
   end

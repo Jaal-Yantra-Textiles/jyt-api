@@ -10,9 +10,51 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_12_04_163713) do
+ActiveRecord::Schema[8.0].define(version: 2024_12_05_172950) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "assets", force: :cascade do |t|
+    t.bigint "organization_id", null: false
+    t.bigint "created_by_id", null: false
+    t.string "name", null: false
+    t.string "content_type", null: false
+    t.bigint "byte_size", null: false
+    t.string "storage_key", null: false
+    t.string "storage_path", null: false
+    t.integer "storage_provider", null: false
+    t.jsonb "metadata", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_assets_on_created_by_id"
+    t.index ["organization_id", "storage_key"], name: "index_assets_on_organization_id_and_storage_key", unique: true
+    t.index ["organization_id"], name: "index_assets_on_organization_id"
+  end
+
+  create_table "dynamic_model_definitions", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "field_definitions", force: :cascade do |t|
+    t.bigint "dynamic_model_definition_id", null: false
+    t.string "name", null: false
+    t.string "field_type", null: false
+    t.json "options"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["dynamic_model_definition_id"], name: "index_field_definitions_on_dynamic_model_definition_id"
+  end
+
+  create_table "invitations", force: :cascade do |t|
+    t.string "email", null: false
+    t.string "status", default: "pending", null: false
+    t.bigint "organization_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id"], name: "index_invitations_on_organization_id"
+  end
 
   create_table "organizations", force: :cascade do |t|
     t.string "name"
@@ -20,6 +62,33 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_04_163713) do
     t.integer "owner_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "active", default: false, null: false
+  end
+
+  create_table "organizations_users", id: false, force: :cascade do |t|
+    t.bigint "organization_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id", "user_id"], name: "index_organizations_users_on_organization_id_and_user_id", unique: true
+    t.index ["organization_id"], name: "index_organizations_users_on_organization_id"
+    t.index ["user_id"], name: "index_organizations_users_on_user_id"
+  end
+
+  create_table "projects", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "relationship_definitions", force: :cascade do |t|
+    t.bigint "dynamic_model_definition_id", null: false
+    t.string "name", null: false
+    t.string "relationship_type", null: false
+    t.string "target_model", null: false
+    t.json "options"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["dynamic_model_definition_id"], name: "index_relationship_definitions_on_dynamic_model_definition_id"
   end
 
   create_table "social_accounts", force: :cascade do |t|
@@ -53,5 +122,12 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_04_163713) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token"
   end
 
+  add_foreign_key "assets", "organizations"
+  add_foreign_key "assets", "users", column: "created_by_id"
+  add_foreign_key "field_definitions", "dynamic_model_definitions"
+  add_foreign_key "invitations", "organizations"
+  add_foreign_key "organizations_users", "organizations"
+  add_foreign_key "organizations_users", "users"
+  add_foreign_key "relationship_definitions", "dynamic_model_definitions"
   add_foreign_key "social_accounts", "users"
 end
