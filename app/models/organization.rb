@@ -10,6 +10,9 @@ class Organization < ApplicationRecord
     validates :name, presence: true
     validates :industry, presence: true
 
+    # for the dynamic models
+    has_many :dynamic_model_definitions
+
       def invite_user(email)
           invitation = invitations.create(email: email, status: "pending")
           if invitation.persisted?

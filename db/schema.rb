@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_12_05_172950) do
+ActiveRecord::Schema[8.0].define(version: 2024_12_06_164636) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -35,6 +35,10 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_05_172950) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "organization_id", null: false
+    t.jsonb "metadata", default: {}
+    t.index ["organization_id", "name"], name: "index_dynamic_model_definitions_on_organization_id_and_name", unique: true
+    t.index ["organization_id"], name: "index_dynamic_model_definitions_on_organization_id"
   end
 
   create_table "field_definitions", force: :cascade do |t|
@@ -75,17 +79,12 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_05_172950) do
     t.index ["user_id"], name: "index_organizations_users_on_user_id"
   end
 
-  create_table "projects", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "relationship_definitions", force: :cascade do |t|
     t.bigint "dynamic_model_definition_id", null: false
     t.string "name", null: false
     t.string "relationship_type", null: false
     t.string "target_model", null: false
-    t.json "options"
+    t.json "options", default: {}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["dynamic_model_definition_id"], name: "index_relationship_definitions_on_dynamic_model_definition_id"
@@ -124,6 +123,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_05_172950) do
 
   add_foreign_key "assets", "organizations"
   add_foreign_key "assets", "users", column: "created_by_id"
+  add_foreign_key "dynamic_model_definitions", "organizations"
   add_foreign_key "field_definitions", "dynamic_model_definitions"
   add_foreign_key "invitations", "organizations"
   add_foreign_key "organizations_users", "organizations"

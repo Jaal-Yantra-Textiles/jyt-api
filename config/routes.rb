@@ -1,4 +1,172 @@
 Rails.application.routes.draw do
+        namespace :api do
+        namespace :v1 do
+          resources :org_100_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_99_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_98_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_97_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_94_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_93_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_92_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_91_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_88_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_87_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_86_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_85_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_82_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_81_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_80_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_79_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_76_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_75_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_74_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_73_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_70_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_69_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_68_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_67_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_64_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_63_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_62_projects
+        end
+      end
+
+        namespace :api do
+        namespace :v1 do
+          resources :org_61_projects
+        end
+      end
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

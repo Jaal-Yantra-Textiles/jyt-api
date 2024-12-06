@@ -1,4 +1,5 @@
 class DynamicModelDefinition < ApplicationRecord
+  belongs_to :organization
   has_many :field_definitions, dependent: :destroy
   has_many :relationship_definitions, dependent: :destroy
 
@@ -14,5 +15,9 @@ class DynamicModelDefinition < ApplicationRecord
 
   def generate_model_files
     DynamicModelService.new(self).generate
+  end
+
+  def cleanup_model_files
+    DynamicModelService.new(self).cleanup
   end
 end
