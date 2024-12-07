@@ -13,7 +13,7 @@ RSpec.describe 'Api::V1::EmailVerifications', type: :request do
         properties: {
           token: { type: :string, example: 'valid_token' }
         },
-        required: ['token']
+        required: [ 'token' ]
       }
 
       response '200', 'email verified successfully' do

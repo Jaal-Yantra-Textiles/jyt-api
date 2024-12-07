@@ -46,7 +46,8 @@ group :development, :test do
   gem "rswag-api"
   gem "rswag-ui"
   gem "rswag-specs"
-  gem 'brakeman', require: false
+  gem "brakeman", require: false
+  gem "rubocop-rails-omakase", require: false
 end
 
 group :development do

@@ -1,7 +1,7 @@
 
 class JwtService
   HMAC_SECRET = Rails.application.credentials.secret_key_base
-  ALGORITHM = 'HS256'.freeze
+  ALGORITHM = "HS256".freeze
 
   def self.encode(payload)
     JWT.encode(payload, HMAC_SECRET, ALGORITHM)

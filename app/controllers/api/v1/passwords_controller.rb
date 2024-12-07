@@ -8,9 +8,9 @@ module Api
         if user
           user.generate_password_reset!
           AuthMailer.with(user: user).password_reset.deliver_later
-          render json: { message: 'Password reset instructions sent to your email' }
+          render json: { message: "Password reset instructions sent to your email" }
         else
-          render json: { error: 'Email not found' }, status: :not_found
+          render json: { error: "Email not found" }, status: :not_found
         end
       end
 
@@ -20,12 +20,12 @@ module Api
         if user&.reset_password_sent_at && !user.password_reset_expired?
           if user.update(password_params)
             user.update(reset_password_token: nil, reset_password_sent_at: nil)
-            render json: { message: 'Password has been reset successfully' }
+            render json: { message: "Password has been reset successfully" }
           else
             render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
           end
         else
-          render json: { error: 'Invalid or expired reset token' }, status: :unprocessable_entity
+          render json: { error: "Invalid or expired reset token" }, status: :unprocessable_entity
         end
       end
 

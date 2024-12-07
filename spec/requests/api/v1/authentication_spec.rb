@@ -13,7 +13,7 @@ RSpec.describe 'Api::V1::Authentication', type: :request do
           email: { type: :string, example: 'test@example.com' },
           password: { type: :string, example: 'password123' }
         },
-        required: ['email', 'password']
+        required: [ 'email', 'password' ]
       }
 
       response '200', 'successful login' do

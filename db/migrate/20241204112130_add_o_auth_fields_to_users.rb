@@ -5,6 +5,6 @@ class AddOAuthFieldsToUsers < ActiveRecord::Migration[8.0]
     add_column :users, :oauth_expires_at, :datetime
 
     add_index :users, :oauth_provider
-    add_index :users, [:oauth_provider, :email]
+    add_index :users, [ :oauth_provider, :email ]
   end
 end

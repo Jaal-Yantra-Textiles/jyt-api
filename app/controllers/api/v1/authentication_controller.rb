@@ -2,7 +2,7 @@
 module Api
   module V1
     class AuthenticationController < ApplicationController
-      skip_before_action :authenticate_request, only: [:login]
+      skip_before_action :authenticate_request, only: [ :login ]
 
       def login
         user = User.find_by(email: params[:email])
@@ -13,7 +13,7 @@ module Api
             user: UserSerializer.new(user)
           }
         else
-          render json: { error: 'Invalid credentials' }, status: :unauthorized
+          render json: { error: "Invalid credentials" }, status: :unauthorized
         end
       end
     end

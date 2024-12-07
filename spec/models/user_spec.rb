@@ -9,7 +9,7 @@ RSpec.describe User, type: :model do
     it { should validate_presence_of(:first_name) }
     it { should validate_presence_of(:last_name) }
     it { should validate_presence_of(:password) }
-    it { should validate_length_of(:password)}
+    it { should validate_length_of(:password) }
 
     it 'validates length of password to be at least 6 characters' do
       user = build(:user, password: 'short', password_confirmation: 'short')

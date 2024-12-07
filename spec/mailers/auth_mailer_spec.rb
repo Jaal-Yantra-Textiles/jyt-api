@@ -12,8 +12,8 @@ RSpec.describe AuthMailer, type: :mailer do
 
     it 'renders the headers' do
       expect(mail.subject).to eq('Reset your password')
-      expect(mail.to).to eq([user.email])
-      expect(mail.from).to eq(['noreply@yourdomain.com'])
+      expect(mail.to).to eq([ user.email ])
+      expect(mail.from).to eq([ 'noreply@yourdomain.com' ])
     end
 
     it 'includes reset token in body' do
@@ -26,8 +26,8 @@ RSpec.describe AuthMailer, type: :mailer do
 
     it 'renders the headers' do
       expect(mail.subject).to eq('Verify your email')
-      expect(mail.to).to eq([user.email])
-      expect(mail.from).to eq(['noreply@yourdomain.com'])
+      expect(mail.to).to eq([ user.email ])
+      expect(mail.from).to eq([ 'noreply@yourdomain.com' ])
     end
 
     it 'includes verification token in body' do

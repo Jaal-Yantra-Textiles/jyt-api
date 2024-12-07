@@ -75,7 +75,7 @@ Rails.application.configure do
 
    # For mailer testing
    config.action_mailer.default_url_options = {
-     host: 'local.yourdomain.com',
-     protocol: 'https'
+     host: "local.yourdomain.com",
+     protocol: "https"
    }
 end
