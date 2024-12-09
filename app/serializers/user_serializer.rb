@@ -17,6 +17,4 @@ class UserSerializer < ActiveModel::Serializer
   def full_name
     object.full_name
   end
-
-  
 end

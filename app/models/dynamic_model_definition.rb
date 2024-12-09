@@ -8,7 +8,7 @@ class DynamicModelDefinition < ApplicationRecord
 
   validates :name, presence: true,
                   format: { with: /\A[A-Z][A-Za-z0-9]*\z/,
-                           message: 'must start with an uppercase letter and can only contain letters and numbers' }
+                           message: "must start with an uppercase letter and can only contain letters and numbers" }
   validates :name, uniqueness: { scope: :organization_id }
   validates :organization, presence: true
 

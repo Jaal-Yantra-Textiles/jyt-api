@@ -1,11 +1,11 @@
 class ModelDefinitionSerializer
   include JSONAPI::Serializer
-  
+
   attributes :name, :description, :created_at, :updated_at, :organization_id
-  
+
   has_many :field_definitions
   has_many :relationship_definitions
-  
+
   attribute :fields_attributes do |object|
     object.field_definitions.map do |field|
       {
@@ -16,7 +16,7 @@ class ModelDefinitionSerializer
       }
     end
   end
-  
+
   attribute :relationship_definitions_attributes do |object|
     object.relationship_definitions.map do |rel|
       {
