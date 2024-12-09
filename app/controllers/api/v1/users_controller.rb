@@ -110,14 +110,9 @@ module Api
       end
 
       def user_params
-        params.require(:user).permit(
-          :email,
-          :password,
-          :password_confirmation,
-          :first_name,
-          :last_name,
-          :role
-        )
+        allowed_params = [ :email, :password, :password_confirmation, :first_name, :last_name ]
+        allowed_params << :role if current_user&.admin?
+        params.require(:user).permit(*allowed_params)
       end
 
       def update_user_params
