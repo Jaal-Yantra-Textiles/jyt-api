@@ -48,6 +48,7 @@ group :development, :test do
   gem "rswag-specs"
   gem "brakeman", require: false
   gem "rubocop-rails-omakase", require: false
+  gem "shoulda-matchers"
 end
 
 group :development do

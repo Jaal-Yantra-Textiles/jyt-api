@@ -3,6 +3,7 @@
 require 'rails_helper'
 
 RSpec.configure do |config|
+  config.include RequestSpecHelper, type: :request
   config.openapi_root = Rails.root.join('swagger').to_s
 
   config.openapi_specs = {

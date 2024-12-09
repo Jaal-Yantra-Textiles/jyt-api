@@ -60,7 +60,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: test
+  database: api_test
   username: postgres
   password: # No password since Docker is configured with trust
   host: localhost

@@ -9,8 +9,7 @@ RSpec.describe 'API V1 Assets', type: :request do
       org.members << user unless org.members.include?(user)
     end
   end
-  let(:auth_token) { auth_headers(user)[:Authorization] }
-  let(:Authorization) { auth_token }
+  let(:Authorization) { auth_token(user) }
   let(:organization_id) { organization.id }
 
 

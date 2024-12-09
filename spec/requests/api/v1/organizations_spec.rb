@@ -3,7 +3,7 @@ require 'swagger_helper'
 RSpec.describe "Api::V1::Organizations API", type: :request do
   let(:user) { create(:user) }
   let!(:organizations) { create_list(:organization, 5, owner: user) }
-  let(:auth_token) { auth_headers(user)[:Authorization] }
+  let(:token) { auth_token(user) }
 
   path '/api/v1/organizations' do
     get 'Lists all organizations' do
@@ -12,7 +12,7 @@ RSpec.describe "Api::V1::Organizations API", type: :request do
       security [ bearer_auth: [] ]
 
       response '200', 'organizations found' do
-        let(:Authorization) { auth_token }
+        let(:Authorization) { token }
 
         schema type: :array,
           items: {
@@ -48,7 +48,7 @@ RSpec.describe "Api::V1::Organizations API", type: :request do
       }
 
       response '201', 'organization created' do
-        let(:Authorization) { auth_token }
+        let(:Authorization) { token }
         let(:organization) { { name: 'New Organization', industry: 'Textiles' } }
 
         run_test! do
@@ -68,7 +68,7 @@ RSpec.describe "Api::V1::Organizations API", type: :request do
       security [ bearer_auth: [] ]
 
       response '200', 'organization found' do
-        let(:Authorization) { auth_token }
+        let(:Authorization) { token }
         let(:id) { organizations.first.id }
 
         schema type: :object,
@@ -101,7 +101,7 @@ RSpec.describe "Api::V1::Organizations API", type: :request do
       }
 
       response '200', 'organization updated' do
-        let(:Authorization) { auth_token }
+        let(:Authorization) { token }
         let(:id) { organizations.first.id }
         let(:organization) { { name: 'Updated Organization' } }
 
@@ -117,7 +117,7 @@ RSpec.describe "Api::V1::Organizations API", type: :request do
       security [ bearer_auth: [] ]
 
       response '204', 'organization deleted' do
-        let(:Authorization) { auth_token }
+        let(:Authorization) { token }
         let(:id) { organizations.first.id }
 
         run_test! do
@@ -135,7 +135,7 @@ RSpec.describe "Api::V1::Organizations API", type: :request do
          security [ bearer_auth: [] ]
 
          response '200', 'organization activated' do
-           let(:Authorization) { auth_token }
+           let(:Authorization) { token }
            let(:id) { organizations.first.id }
 
            run_test! do
@@ -164,7 +164,7 @@ RSpec.describe "Api::V1::Organizations API", type: :request do
          }
 
          response '200', 'invitation sent' do
-           let(:Authorization) { auth_token }
+           let(:Authorization) { token }
            let(:id) { organizations.first.id }
            let(:email) { { email: 'user@example.com' } }
 
@@ -194,7 +194,7 @@ RSpec.describe "Api::V1::Organizations API", type: :request do
          }
 
          response '200', 'user added' do
-           let(:Authorization) { auth_token }
+           let(:Authorization) { token }
            let(:id) { organizations.first.id }
            let(:email) { { email: 'user@example.com' } }
            let!(:user_to_add) { create(:user, email: 'user@example.com') }

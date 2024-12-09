@@ -1,10 +1,14 @@
-# config/initializers/db_check.rb
-begin
-  ActiveRecord::Base.establish_connection
-  ActiveRecord::Base.connection.active? # This will verify the active connection
-  ActiveRecord::Base.connection.execute("SELECT 1")
-  puts "Database connected successfully."
-rescue ActiveRecord::ConnectionNotEstablished, ActiveRecord::NoDatabaseError, ActiveRecord::StatementInvalid => e
-  puts "Database connection error: #{e.message}"
-  exit(1)
+if defined?(Rails::Server) || defined?(Rails::Console)
+  begin
+    # Establish connection
+    ActiveRecord::Base.establish_connection
+
+    # Check if the database is active and ready
+    if ActiveRecord::Base.connection.active?
+      ActiveRecord::Base.connection.execute("SELECT 1")
+      puts "Database connected successfully."
+    end
+  rescue ActiveRecord::NoDatabaseError, ActiveRecord::ConnectionNotEstablished, ActiveRecord::StatementInvalid => e
+    puts "Skipping database check: #{e.message}"
+  end
 end

@@ -6,4 +6,12 @@ class RelationshipDefinition < ApplicationRecord
   validates :name, presence: true
   validates :relationship_type, presence: true, inclusion: { in: VALID_TYPES }
   validates :target_model, presence: true
+
+  def relationship_details
+    {
+      name: name,
+      relationship_type: relationship_type,
+      target_model: target_model
+    }
+  end
 end

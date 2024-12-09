@@ -54,7 +54,7 @@ Key components include:
 ### Installation
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/yourusername/jaal-yantra-textiles.git
+   git clone https://github.com/jyt/api
    cd jaal-yantra-textiles
    ```
 2. **Install Dependencies**

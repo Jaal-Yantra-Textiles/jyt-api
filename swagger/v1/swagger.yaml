@@ -176,6 +176,139 @@ paths:
               required:
               - email
               - password
+  "/api/v1/organizations/{organization_id}/dynamic_models":
+    post:
+      summary: Creates a dynamic model definition
+      tags:
+      - Dynamic Models
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: dynamic model created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                dynamic_model_definition:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    field_definitions_attributes:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          field_type:
+                            type: string
+                          options:
+                            type: object
+                    relationship_definitions_attributes:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          relationship_type:
+                            type: string
+                          target_model:
+                            type: string
+  "/api/v1/organizations/{organization_id}/dynamic_models/{id}":
+    get:
+      summary: Retrieves a dynamic model
+      tags:
+      - Dynamic Models
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: dynamic model found
+        '404':
+          description: dynamic model not found
+    patch:
+      summary: Updates a dynamic model
+      tags:
+      - Dynamic Models
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: dynamic model updated
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                dynamic_model_definition:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    description:
+                      type: string
+    delete:
+      summary: Deletes a dynamic model
+      tags:
+      - Dynamic Models
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: dynamic model deleted
+        '404':
+          description: dynamic model not found
   "/api/v1/verify_email":
     post:
       summary: Verifies user email

@@ -3,8 +3,15 @@ module RequestSpecHelper
     JSON.parse(response.body)
   end
 
-  def auth_headers(user)
+  def auth_token(user)
     token = JwtService.encode({ user_id: user.id })
-    { 'Authorization': "Bearer #{token}", 'Content-Type': 'application/json' }
+    "Bearer #{token}"
+  end
+
+  def auth_headers(user)
+    {
+      'Authorization': auth_token(user),
+      'Content-Type': 'application/json'
+    }
   end
 end

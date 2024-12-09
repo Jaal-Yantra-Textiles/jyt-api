@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_12_06_164636) do
+ActiveRecord::Schema[8.0].define(version: 2024_12_09_071610) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -37,8 +37,20 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_06_164636) do
     t.datetime "updated_at", null: false
     t.bigint "organization_id", null: false
     t.jsonb "metadata", default: {}
+    t.text "description"
     t.index ["organization_id", "name"], name: "index_dynamic_model_definitions_on_organization_id_and_name", unique: true
     t.index ["organization_id"], name: "index_dynamic_model_definitions_on_organization_id"
+  end
+
+  create_table "dynamic_routes", force: :cascade do |t|
+    t.string "path", null: false
+    t.string "controller", null: false
+    t.string "action", null: false
+    t.string "method", default: "GET", null: false
+    t.integer "organization_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["path", "organization_id", "method"], name: "index_dynamic_routes_on_path_and_organization_id_and_method", unique: true
   end
 
   create_table "field_definitions", force: :cascade do |t|
