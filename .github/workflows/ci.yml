@@ -74,4 +74,5 @@ jobs:
           RAILS_ENV: test
           DATABASE_URL: postgres://postgres:postgres@localhost:5432
           # REDIS_URL: redis://localhost:6379/0
-        run: bin/rails db:test:prepare test
+        run: bin/rails db:setup && bin/rails test:prepare && bin/rails test PARALLEL_WORKERS=4
+
