@@ -6,7 +6,7 @@ ruby "3.3.6" # Adjust this to your Ruby version
 # Rails core gems
 gem "rails", "~> 8.0.0"
 gem "pg", "~> 1.5"
-gem "puma", "~> 6.5"
+gem "puma", "~> 6.6"
 
 # API related gems
 gem "rack-cors"
